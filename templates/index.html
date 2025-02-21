@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guttenberg L1 - Upload Book</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.5/web3.min.js"></script>
+</head>
+<body>
+    <h1>Upload Your Book</h1>
+    <form id="uploadForm">
+        <label>Title:</label>
+        <input type="text" id="title" required><br>
+        
+        <label>Author:</label>
+        <input type="text" id="author" required><br>
+        
+        <label>Date:</label>
+        <input type="date" id="date" required><br>
+
+        <label>Book Content:</label>
+        <textarea id="bookContent" rows="6" required></textarea><br>
+
+        <button type="submit">Upload Book</button>
+    </form>
+
+    <h2>Books in Guttenberg L1</h2>
+    <ul id="bookList"></ul>
+
+    <script>
+        async function uploadBook(event) {
+            event.preventDefault();
+
+            const title = document.getElementById("title").value;
+            const author = document.getElementById("author").value;
+            const date = document.getElementById("date").value;
+            const content = document.getElementById("bookContent").value;
+
+            // Split book into words
+            const words = content.split(" ");
+
+            const response = await fetch("/upload", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title, author, date, words })
+            });
+
+            const data = await response.json();
+            alert("Book Uploaded! TX Hash: " + data.tx_hash);
+        }
+
+        async function loadBooks() {
+            const response = await fetch("/get_books");
+            const data = await response.json();
+            const bookList = document.getElementById("bookList");
+            bookList.innerHTML = "";
+            data.books.forEach(book => {
+                const li = document.createElement("li");
+                li.textContent = `${book.title} by ${book.author} (UUID: ${book.uuid})`;
+                bookList.appendChild(li);
+            });
+        }
+
+        document.getElementById("uploadForm").addEventListener("submit", uploadBook);
+        window.onload = loadBooks;
+    </script>
+</body>
+</html>
