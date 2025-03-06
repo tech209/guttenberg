@@ -1,5 +1,3 @@
-Here’s a structured README.md for your Guttenberg project based on your Solidity contracts.
-
 Guttenberg Blockchain Protocol
 
 A decentralized protocol for registering, storing, and managing books, utilizing NFTs and tokenized words.
